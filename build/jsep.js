@@ -501,6 +501,17 @@
 						gobbleSpaces();
 						ch_i = exprICode(index);
 					}
+
+					// Allow percentage, e.g. 'x%'
+					if (ch_i === PERCENT_CODE) {
+						return {
+							type: UNARY_EXP,
+							operator: exprI(index++),
+							argument: node,
+							prefix: false
+						};
+					}
+
 					return node;
 				},
 
