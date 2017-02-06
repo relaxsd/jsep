@@ -59,6 +59,14 @@ test('Constants', function() {
 	test_parser("12.3", {value: 12.3});
 });
 
+test('Percentage', function() {
+	test_parser("12%", {
+		type: "UnaryExpression",
+		operator: "%",
+		argument: { value: 12}
+	})
+});
+
 test('Variables', function() {
 	test_parser("abc", {name: "abc"});
 	test_parser("a.b[c[0]]", {

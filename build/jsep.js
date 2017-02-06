@@ -22,17 +22,18 @@
 		CONDITIONAL_EXP = 'ConditionalExpression',
 		ARRAY_EXP = 'ArrayExpression',
 
-		PERIOD_CODE = 46, // '.'
-		COMMA_CODE  = 44, // ','
-		SQUOTE_CODE = 39, // single quote
-		DQUOTE_CODE = 34, // double quotes
-		OPAREN_CODE = 40, // (
-		CPAREN_CODE = 41, // )
-		OBRACK_CODE = 91, // [
-		CBRACK_CODE = 93, // ]
-		QUMARK_CODE = 63, // ?
-		SEMCOL_CODE = 59, // ;
-		COLON_CODE  = 58, // :
+		PERIOD_CODE  = 46, // '.'
+		COMMA_CODE   = 44, // ','
+		SQUOTE_CODE  = 39, // single quote
+		DQUOTE_CODE  = 34, // double quotes
+		OPAREN_CODE  = 40, // (
+		CPAREN_CODE  = 41, // )
+		OBRACK_CODE  = 91, // [
+		CBRACK_CODE  = 93, // ]
+		QUMARK_CODE  = 63, // ?
+		SEMCOL_CODE  = 59, // ;
+		COLON_CODE   = 58, // :
+		PERCENT_CODE = 37, // %
 
 		throwError = function(message, index) {
 			var error = new Error(message + ' at character ' + index);
@@ -325,11 +326,23 @@
 						throwError('Unexpected period', index);
 					}
 
-					return {
+					var literal = {
 						type: LITERAL,
 						value: parseFloat(number),
 						raw: number
 					};
+
+					// Allow percentage, e.g. '10%'
+					if (chCode === PERCENT_CODE) {
+						return {
+							type: UNARY_EXP,
+							operator: exprI(index++),
+							argument: literal,
+							prefix: false
+						};
+					}
+
+					return literal;
 				},
 
 				// Parses a string literal, staring with single or double quotes with basic support for escape codes
